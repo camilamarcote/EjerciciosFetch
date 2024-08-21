@@ -1,6 +1,7 @@
-const DATA_URL = "json/data.json"; // URL que contiene los datos que queremos mostrar
-
-const container = document.getElementById("container"); // "Traemos" utilizando el DOM el div de id "container" para colocar la información en él
+const DATA_URL = "json/data.json"; 
+const container = document.getElementById("container");
+const courseElement = document.getElementById("course");
+const teacherElement = document.getElementById("teacher");
 
 let getJSONData = function(url){
   let result = {};
@@ -13,37 +14,43 @@ let getJSONData = function(url){
     }
   })
   .then(function(response) {
-        result.status = 'ok';
-        result.data = response;
-        return result;
+    result.status = 'ok';
+    result.data = response;
+    return result;
   })
   .catch(function(error) {
-      result.status = 'error';
-      result.data = error;
-      return result;
+    result.status = 'error';
+    result.data = error;
+    return result;
   });
 }
 
-function mostrarEmpleados(arreglo) {
-    arreglo.forEach((students) => {
-        container.innerHTML += `
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h2 class="card-title">El nombre es: ${students.name} ${students.lastname}</h2>
-                <p class="card-text">Su edad es: ${students.age}</p>
-            </div>
+function mostrarEstudiantes(data) {
+  // Mostrar los datos del curso y del profesor
+  courseElement.textContent = data.course;
+  teacherElement.textContent = data.teacherName;
+
+  // Mostrar los estudiantes
+  data.students.forEach(student => {
+    container.innerHTML += `
+      <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">${student.name} ${student.lastname}</h5>
+            <p class="card-text">Edad: ${student.age}</p>
+          </div>
         </div>
-        `;
-        
-        console.log(`El nombre es: ${students.name} ${students.lastname}`);
-        console.log(`Su edad es: ${students.age}`); 
-    });
+      </div>
+    `;
+  });
 }
 
 getJSONData(DATA_URL).then(function(result) {
-    if (result.status === 'ok') {
-        mostrarEmpleados(result.data.students);
-    } else {
-        console.error("Error al obtener los datos");
-    }
+  if (result.status === 'ok') {
+    mostrarEstudiantes(result.data);
+  } else {
+    console.error("Error al obtener los datos");
+  }
 });
+
+
